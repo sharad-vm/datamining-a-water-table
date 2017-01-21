@@ -54,3 +54,19 @@ ggplot(train, aes(x = construction_year)) +
 ggplot(subset(train, construction_year > 0), aes(x = construction_year)) +
   geom_histogram(bins = 20) + 
   facet_grid( ~ status_group)
+
+# Load the randomForest library
+library(randomForest)
+
+# Set seed and create a random forest classifier
+set.seed(42)
+model_forest <- randomForest(as.factor(status_group) ~ longitude + latitude + extraction_type_group + quality_group + quantity + waterpoint_type + construction_year, data = train, importance = TRUE, ntree = 5, nodesize = 2)
+
+# Use random forest to predict the values in train
+pred_forest_train <- predict(model_forest, train)
+
+# Observe the first few rows of your predictions
+head(pred_forest_train)
+
+# Variable Importance
+varImpPlot(model_forest)
